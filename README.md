@@ -1,6 +1,6 @@
 # Alad-i18n VSCode 插件
 
-[![Version](https://img.shields.io/badge/version-0.0.7)](https://marketplace.visualstudio.com/items?itemName=alad-i18n)
+[![Version](https://img.shields.io/badge/version-0.0.7)](https://marketplace.visualstudio.com/items?itemName=rascal-coder1.Alad-i18n)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![VSCode](https://img.shields.io/badge/VSCode-Extension-orange.svg)](https://code.visualstudio.com/)
 

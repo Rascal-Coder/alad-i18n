@@ -1,6 +1,6 @@
 # Alad-i18n VSCode 插件
 
-[![Version](https://img.shields.io/badge/version-0.0.7)](https://marketplace.visualstudio.com/items?itemName=rascal-coder1.Alad-i18n)
+<a href="https://marketplace.visualstudio.com/items?rascal-coder1.Alad-i18n" target="__blank"><img src="https://img.shields.io/visual-studio-marketplace/v/rascal-coder1.Alad-i18n.svg?color=4EC5D4&amp;label=VS%20Code%20Marketplace&logo=visual-studio-code" alt="Visual Studio Marketplace Version" /></a>
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![VSCode](https://img.shields.io/badge/VSCode-Extension-orange.svg)](https://code.visualstudio.com/)
 
@@ -14,6 +14,14 @@
 - ⚡ **Vue 3 支持** - 完美适配 Vue 3 项目的国际化需求
 - 🔧 **灵活配置** - 丰富的配置选项，满足不同项目需求
 - 🎯 **一键操作** - 快捷键和右键菜单，操作简单便捷
+
+## 📝 使用示例
+
+### 使用效果
+
+![示例1](./images/example_1.png)
+![示例2](./images/example_2.png)
+![示例3](./images/example_3.png)
 
 ## 🚀 快速开始
 
@@ -83,147 +91,4 @@
 | `Alad-i18n.UnifiedFileName`  | `string`   | `"lang"`                              | 统一输出的文件名称   | ❌   |
 | `Alad-i18n.Vue3i18n`         | `boolean`  | `true`                                | 是否是 Vue 3 项目    | ❌   |
 | `Alad-i18n.LocalesMehodName` | `string`   | `"$t"`                                | i18n 方法名          | ❌   |
-| `Alad-i18n.OutExtractFile`   | `boolean`  | `false`                               | 是否输出提取的文件   | ❌   |
-| `Alad-i18n.Languages`        | `string[]` | `["zh:zh-CN", "en:en-US"]`            | 支持的语言列表       | ❌   |
-| `Alad-i18n.LocalesPath`      | `string`   | `""`                                  | 多语言文件输出路径   | ❌   |
-| `Alad-i18n.ImportCode`       | `string`   | `"import { $t } from '#/locales';\n"` | 自动注入的导入代码   | ❌   |
-| `Alad-i18n.LocalesPerfix`    | `string`   | `"locale"`                            | 多语言键值前缀       | ❌   |
-
-### 配置说明
-
-#### 文件输出模式
-
-- **`unified`**: 统一模式，所有翻译结果合并到一个文件中
-- **`file`**: 按文件模式，每个源文件对应一个翻译文件
-
-#### 语言列表格式
-
-语言列表使用 `"源语言:目标语言"` 的格式，例如：
-
-- `"zh:zh-CN"`: 中文到简体中文
-- `"en:en-US"`: 英文到美式英文
-
-## 🌍 支持的语言
-
-| 语言       | 代码  | 语言         | 代码  |
-| ---------- | ----- | ------------ | ----- |
-| 中文       | `zh`  | 英语         | `en`  |
-| 粤语       | `yue` | 文言文       | `wyw` |
-| 日语       | `jp`  | 韩语         | `kor` |
-| 法语       | `fra` | 西班牙语     | `spa` |
-| 泰语       | `th`  | 阿拉伯语     | `ara` |
-| 俄语       | `ru`  | 葡萄牙语     | `pt`  |
-| 德语       | `de`  | 意大利语     | `it`  |
-| 希腊语     | `el`  | 荷兰语       | `nl`  |
-| 波兰语     | `pl`  | 保加利亚语   | `bul` |
-| 爱沙尼亚语 | `est` | 丹麦语       | `dan` |
-| 芬兰语     | `fin` | 捷克语       | `cs`  |
-| 罗马尼亚语 | `rom` | 斯洛文尼亚语 | `slo` |
-| 瑞典语     | `swe` | 匈牙利语     | `hu`  |
-| 繁体中文   | `cht` | 越南语       | `vie` |
-
-## 🔧 百度翻译 API 配置指南
-
-### 开通步骤
-
-1. **注册账号**
-   - 访问 [百度翻译开放平台](https://fanyi-api.baidu.com)
-   - 使用百度账号登录
-
-2. **选择服务**
-   - 点击"通用文本翻译"的"查看详情"
-     ![image.png](./images/baidu_1.png)
-   - 点击"立即使用"
-     ![image.png](./images/baidu_2.png)
-
-3. **填写信息**
-   - 选择"个人开发者"
-   - 填写基本信息
-     ![image.png](./images/baidu_3.png)
-   - 完成实名认证（可选，用于开通高级版）
-     ![image.png](./images/baidu_4.png)
-
-4. **开通服务**
-   - 点击立即开通
-     ![image.png](./images/baidu_5.png)
-   - 选择"通用文本翻译"
-     ![image.png](./images/baidu_6.png)
-   - 选择"高级版"
-     ![image.png](./images/baidu_7.png)
-   - 填写应用名称
-     ![image.png](./images/baidu_8.png)
-   - 提交申请（通常秒通过）
-
-### 获取凭据
-
-开通成功后，在控制台可以获取：
-
-- **App ID**: 应用标识
-- **App Token**: 应用密钥
-  ![image.png](./images/baidu_9.png)
-
-> ⚠️ **重要提醒**: 百度翻译每月提供 100 万字符的免费额度，超出部分会收费。请妥善保管您的 API 凭据。
-
-## 🛠️ 开发指南
-
-### 环境要求
-
-- Node.js >= 14
-- VSCode >= 1.60
-
-### 本地开发
-
-```bash
-# 克隆项目
-git clone https://github.com/Rascal-Coder/alad-i18n.git
-cd alad-i18n
-
-# 安装依赖
-npm install
-
-# 编译项目
-npm run build
-
-# 打包插件
-npm run package
-```
-
-### 发布
-
-1. 安装打包工具：
-   ```bash
-   npm install -g @vscode/vsce
-   ```
-
-2. 构建插件：
-   ```bash
-   npm run build
-   ```
-
-3. 生成 `.vsix` 文件：
-   ```bash
-   vsce package
-   ```
-
-4. 安装到本地 VSCode：
-   - 打开 VSCode
-   - 按 `Ctrl+Shift+P` 打开命令面板
-   - 输入 "Extensions: Install from VSIX"
-   - 选择生成的 `.vsix` 文件
-
-## 📝 更新日志
-
-详见 [CHANGELOG.md](CHANGELOG.md)
-
-## 📄 许可证
-
-本项目遵循 [MIT 许可证](LICENSE)。
-
-## 🙏 致谢
-
-感谢 [百度翻译开放平台](https://fanyi-api.baidu.com/) 提供的翻译服务支持。
-参考[easy-i18n-helper](https://github.com/dbfu/easy-i18n-helper/tree/main)
-
----
-
-如果这个插件对您有帮助，请给我们一个 ⭐️ Star！
+| `Alad-i18n.OutExtractFile`   | `

@@ -9,7 +9,7 @@ import { depositEntry, unifiedFileMergeData, loadExistingTranslations } from './
 import { testRootPath } from './tool/testing'
 import { handlerFileUrl } from './tool/file'
 import { setGlobalContext } from './store/global-status'
-import { getSetConfigFile } from './config'
+import { checkConfig } from './config'
 
 //当您的扩展被激活时，会调用此方法
 //您的扩展在第一次执行命令时就被激活了
@@ -25,13 +25,14 @@ export function activate(context: vscode.ExtensionContext) {
     try {
       // 必要前置检测
       testRootPath()
-      // 配置文件读取处理
-      await getSetConfigFile()
 
       const path = uri.fsPath
       if (!path) {
         message({ msg: '没有文件路径,无法进行提取', type: MessageType.error })
         return false
+      }
+      if (!checkConfig()) {
+        return
       }
       // 文件地址预处理
       handlerFileUrl(path)

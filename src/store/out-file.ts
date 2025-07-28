@@ -66,7 +66,6 @@ class WordsManager {
     if (!languages.length) {
       return []
     }
-    console.log('languages', languages)
 
     const res = languages
       .map((lang) => {
@@ -93,7 +92,6 @@ class WordsManager {
         }
       })
       .filter((o) => !!o)
-    console.log('res', res)
 
     return res
   }
@@ -338,7 +336,6 @@ export async function depositEntry() {
       // 输出的文件目录
       const createPath = join(getVsCodeProjectPath(), '/' + config.outFile + '/')
       await createFile(createPath)
-      // console.log(res)
       await writeFile(
         createPath,
         globalStatus.currentFileName + '.json',
@@ -451,25 +448,27 @@ const saveToLocalFile = (data: Words[], instance: WordsManager) => {
 
   // 计算 locales 完整路径
   const localesFullPath = path.join(instance['projectRootPath'], getConfig().localesPath)
-
-  if (!fs.existsSync(localesFullPath)) {
-    try {
-      fs.mkdirSync(localesFullPath, { recursive: true })
-      message({
-        type: MessageType.warn,
-        msg: `${localesFullPath}文件夹不存在，已为您自动生成。`,
-      })
-    } catch (error) {
-      message({
-        type: MessageType.error,
-        msg: `创建文件夹 ${localesFullPath} 失败：${error}`,
-      })
-      return
-    }
-  }
-
   instance['languages'].forEach((lang: Language) => {
     const fullFilePath = path.join(localesFullPath, `./${lang.localeFileName}.json`)
+
+    // 确保语言子目录存在
+    const languageDir = path.dirname(fullFilePath)
+    if (!fs.existsSync(languageDir)) {
+      try {
+        fs.mkdirSync(languageDir, { recursive: true })
+        message({
+          type: MessageType.warn,
+          msg: `语言目录 ${languageDir} 不存在，已为您自动生成。`,
+        })
+      } catch (error) {
+        message({
+          type: MessageType.error,
+          msg: `创建语言目录 ${languageDir} 失败：${error}`,
+        })
+        return
+      }
+    }
+
     if (!fs.existsSync(fullFilePath)) {
       try {
         fs.writeFileSync(fullFilePath, '{}')

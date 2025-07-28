@@ -13,10 +13,12 @@ import { getConfig } from '../config'
  */
 export function translates(words: string[], to = 'en'): any {
   return new Promise((resolve, reject) => {
-    const config = getConfig()
-    const { baiduAppId, baiduAppToken } = config
-    const appId = baiduAppId
-    const appToken = baiduAppToken
+    // const config = getConfig()
+    // const { baiduAppId, baiduAppToken } = config
+    // const appId = baiduAppId
+    // const appToken = baiduAppToken
+    const appId = vscode.workspace.getConfiguration().get('Alad-i18n.Baidu App Id') as string
+    const appToken = vscode.workspace.getConfiguration().get('Alad-i18n.Baidu App Token') as string
     if (!appId || !appToken) {
       showError('请配置百度翻译的appId和appToken')
       return

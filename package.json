@@ -2,7 +2,8 @@
 	"name": "Alad-i18n",
 	"displayName": "Alad-i18n",
 	"description": "支持自动获取文件代码中的中文，自动翻译成各种语言并自动保存到本地。",
-	"version": "0.0.1",
+	"version": "0.0.3",
+	"repository": "https://github.com/Rascal-Coder/alad-i18n",
 	"publisher": "Rascal-Coder",
 	"engines": {
 		"vscode": "^1.77.0"
@@ -15,8 +16,80 @@
 	"main": "./out/extension.js",
 	"contributes": {
 		"configuration": {
-			"type": "object",
-			"title": "Alad-i18n"
+			"title": "Alad-i18n",
+			"properties": {
+				"Alad-i18n.Baidu App Id": {
+					"type": "string",
+					"description": "百度申请的app id",
+					"default": ""
+				},
+				"Alad-i18n.Baidu App Token": {
+					"type": "string",
+					"description": "百度申请的app token",
+					"default": ""
+				},
+				"Alad-i18n.OutFile": {
+					"type": "string",
+					"description": "提取中文的输出文件地址",
+					"default": "alad-i18n-out"
+				},
+				"Alad-i18n.I18nLang": {
+					"type": "string",
+					"description": "是否输出提取的文件",
+					"default": ""
+				},
+				"Alad-i18n.FileOutMode": {
+					"type": "string",
+					"description": "输出文件模式",
+					"default": "unified"
+				},
+				"Alad-i18n.UnifiedFileName": {
+					"type": "string",
+					"description": "统一输出文件名称",
+					"default": "lang"
+				},
+				"Alad-i18n.Vue3i18n": {
+					"type": "boolean",
+					"description": "是否是vue3",
+					"default": true
+				},
+				"Alad-i18n.LocalesMehodName": {
+					"type": "string",
+					"description": "国际化变量名",
+					"default": "$t"
+				},
+				"Alad-i18n.OutExtractFile": {
+					"type": "boolean",
+					"description": "是否输出提取的文件",
+					"default": false
+				},
+				"Alad-i18n.Languages": {
+					"type": "array",
+					"description": "语言列表",
+					"default": [
+						"zh:zh-CN",
+						"en:en-US"
+					],
+					"items": {
+						"type": "string"
+					}
+				},
+				"Alad-i18n.LocalesPath": {
+					"type": "string",
+					"description": "国际化输出到的文件地址",
+					"default": ""
+				},
+				"Alad-i18n.ImportCode": {
+					"type": "string",
+					"description": "引入代码",
+					"default": "import { $t } from '#/locales';\n"
+				},
+				"Alad-i18n.LocalesPerfix": {
+					"type": "string",
+					"description": "国际化替换的前缀",
+					"default": "locale"
+				}
+			}
 		},
 		"commands": [
 			{

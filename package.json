@@ -2,7 +2,7 @@
 	"name": "Alad-i18n",
 	"displayName": "Alad-i18n",
 	"description": "支持自动获取文件代码中的中文，自动翻译成各种语言并自动保存到本地。",
-	"version": "0.0.3",
+	"version": "0.0.7",
 	"repository": "https://github.com/Rascal-Coder/alad-i18n",
 	"publisher": "Rascal-Coder",
 	"engines": {
@@ -12,7 +12,13 @@
 		"Other"
 	],
 	"icon": "public/logo.png",
-	"activationEvents": [],
+	"activationEvents": [
+		"onLanguage:javascript",
+		"onLanguage:javascriptreact",
+		"onLanguage:typescript",
+		"onLanguage:typescriptreact",
+		"onLanguage:vue"
+	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"configuration": {
@@ -116,14 +122,15 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
+		"vscode:prepublish": "npm run compile  && npm run copy:html",
 		"compile": "tsc -p ./ && npm run copy:html",
 		"watch:ts": "tsc -w -p ./",
 		"watch:html": "copyfiles -u 2 src/html/**/*.html out/html -w",
 		"watch": "npm-run-all --parallel watch:ts watch:html",
 		"lint": "eslint src --ext ts",
-		"build": "node ./build/index.mjs && npm run copy:html && vsce package",
-		"copy:html": "copyfiles -u 2 src/html/**/*.html out/html"
+		"build": "node ./build/index.mjs && vsce package && npm run sync-version",
+		"copy:html": "copyfiles -u 2 src/html/**/*.html out/html",
+		"sync-version": "node scripts/sync-version.js"
 	},
 	"devDependencies": {
 		"@types/ejs": "^3.1.5",
@@ -149,6 +156,7 @@
 		"@typescript-eslint/parser": "^5.58.0",
 		"ejs": "^3.1.10",
 		"eslint": "^8.39.0",
+		"nanoid": "^5.1.5",
 		"vue-eslint-parser": "^9.1.1"
 	}
 }

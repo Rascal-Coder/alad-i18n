@@ -14,6 +14,7 @@ import { checkConfig } from './config'
 //当您的扩展被激活时，会调用此方法
 //您的扩展在第一次执行命令时就被激活了
 export function activate(context: vscode.ExtensionContext) {
+  console.log('Plugin activating...')
   setGlobalContext(context)
   //使用控制台输出诊断信息（console.log）和错误（console.error）
   //当您的扩展被激活时，这行代码将只执行一次
@@ -21,7 +22,11 @@ export function activate(context: vscode.ExtensionContext) {
   //该命令需要已在package.json文件中定义
   //现在用registerCommand提供该命令的实现
   //commandId参数必须与package.json中的命令字段匹配
+  console.log('Registering command:', CommandsEnum.Translate)
+
   const disposable = vscode.commands.registerCommand(CommandsEnum.Translate, async (uri) => {
+    console.log('Command executed! URI:', uri)
+
     try {
       // 必要前置检测
       testRootPath()

@@ -91,4 +91,4 @@
 | `Alad-i18n.UnifiedFileName`  | `string`   | `"lang"`                              | 统一输出的文件名称   | ❌   |
 | `Alad-i18n.Vue3i18n`         | `boolean`  | `true`                                | 是否是 Vue 3 项目    | ❌   |
 | `Alad-i18n.LocalesMehodName` | `string`   | `"$t"`                                | i18n 方法名          | ❌   |
-| `Alad-i18n.OutExtractFile`   | `
+| `Alad-i18n.OutExtractFile`   | `boolean`  | `false`                               | 是否导出文件          | ❌   |

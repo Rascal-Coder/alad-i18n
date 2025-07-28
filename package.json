@@ -1,0 +1,81 @@
+{
+	"name": "Alad-i18n",
+	"displayName": "Alad-i18n",
+	"description": "支持自动获取文件代码中的中文，自动翻译成各种语言并自动保存到本地。",
+	"version": "0.0.1",
+	"publisher": "Rascal-Coder",
+	"engines": {
+		"vscode": "^1.77.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"icon": "public/logo.png",
+	"activationEvents": [],
+	"main": "./out/extension.js",
+	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "Alad-i18n"
+		},
+		"commands": [
+			{
+				"command": "Alad-i18n.translate",
+				"title": "Alad-i18n: 翻译当前页面"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "Alad-i18n.translate",
+				"key": "ctrl+shift+t",
+				"mac": "cmd+shift+t",
+				"when": "resourceLangId == javascript || resourceLangId == javascriptreact || resourceLangId == typescript || resourceLangId == typescriptreact || resourceLangId == vue"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"when": "resourceLangId == javascript || resourceLangId == javascriptreact || resourceLangId == typescript || resourceLangId == typescriptreact || resourceLangId == vue",
+					"command": "Alad-i18n.translate",
+					"group": "navigation@6"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./ && npm run copy:html",
+		"watch:ts": "tsc -w -p ./",
+		"watch:html": "copyfiles -u 2 src/html/**/*.html out/html -w",
+		"watch": "npm-run-all --parallel watch:ts watch:html",
+		"lint": "eslint src --ext ts",
+		"build": "node ./build/index.mjs && npm run copy:html && vsce package",
+		"copy:html": "copyfiles -u 2 src/html/**/*.html out/html"
+	},
+	"devDependencies": {
+		"@types/ejs": "^3.1.5",
+		"@types/eslint": "^8.37.0",
+		"@types/eslint-scope": "^3.7.4",
+		"@types/glob": "^8.1.0",
+		"@types/mocha": "^10.0.1",
+		"@types/node": "^16.18.23",
+		"@types/vscode": "^1.77.0",
+		"@typescript-eslint/eslint-plugin": "^5.58.0",
+		"@vscode/test-electron": "^2.3.0",
+		"copyfiles": "^2.4.1",
+		"eslint-config-prettier": "^8.8.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"glob": "^8.1.0",
+		"mocha": "^10.2.0",
+		"npm-run-all": "^4.1.5",
+		"prettier": "^2.8.7",
+		"ts-node": "^10.9.1",
+		"typescript": "^5.0.4"
+	},
+	"dependencies": {
+		"@typescript-eslint/parser": "^5.58.0",
+		"ejs": "^3.1.10",
+		"eslint": "^8.39.0",
+		"vue-eslint-parser": "^9.1.1"
+	}
+}

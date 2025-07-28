@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+<head>
+  <meta charset="utf-8">
+  <title>翻译管理</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <style type="text/css">
+    body.vscode-light {
+      --bs-body-bg: #ffffff;
+      --bs-body-color: #333333;
+      --bs-border-color: #dee2e6;
+      --bs-table-bg: #ffffff;
+      --bs-table-hover-bg: #f8f9fa;
+    }
+
+    body.vscode-dark {
+      --bs-body-bg: #1e1e1e;
+      --bs-body-color: #ffffff;
+      --bs-border-color: #404040;
+      --bs-table-bg: #2d2d2d;
+      --bs-table-hover-bg: #404040;
+    }
+
+    body.vscode-high-contrast {
+      --bs-body-bg: #000000;
+      --bs-body-color: #ffffff;
+      --bs-border-color: #ffffff;
+      --bs-table-bg: #000000;
+      --bs-table-hover-bg: #333333;
+    }
+
+    body {
+      background-color: var(--bs-body-bg);
+      color: var(--bs-body-color);
+      font-size: var(--vscode-editor-font-size);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .save-btn {
+      background: linear-gradient(45deg, #28a745, #20c997);
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 25px;
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+      background: linear-gradient(45deg, #218838, #1abc9c);
+    }
+
+    .save-btn:active {
+      transform: translateY(0);
+    }
+
+    .save-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.6s ease;
+    }
+
+    .save-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .table-container {
+      background: var(--bs-table-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--bs-border-color);
+    }
+
+    .custom-table {
+      margin: 0;
+      font-size: 14px;
+      table-layout: fixed;
+      width: 100%;
+    }
+
+    .custom-table thead th {
+      background: linear-gradient(135deg, #6c757d, #495057);
+      color: white;
+      font-weight: 600;
+      text-align: center;
+      padding: 15px 10px;
+      border: none;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .custom-table tbody td {
+      padding: 12px 10px;
+      vertical-align: middle;
+      border-color: var(--bs-border-color);
+      word-break: break-word;
+      max-width: 200px;
+    }
+
+    .custom-table tbody tr:hover {
+      background-color: var(--bs-table-hover-bg);
+      transition: all 0.2s ease;
+    }
+
+    .clickable-cell {
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .clickable-cell:hover {
+      background: linear-gradient(135deg, rgba(13, 110, 253, 0.1), rgba(102, 16, 242, 0.1));
+      border-radius: 8px;
+    }
+
+    .clickable-cell::after {
+      content: '\f470';
+      font-family: 'Bootstrap Icons';
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: all 0.2s ease;
+      color: #0d6efd;
+    }
+
+    .clickable-cell:hover::after {
+      opacity: 1;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-exists {
+      background-color: rgba(255, 193, 7, 0.2);
+      color: #f57c00;
+      border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .status-new {
+      background-color: rgba(25, 135, 84, 0.2);
+      color: #198754;
+      border: 1px solid rgba(25, 135, 84, 0.3);
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .badge-dot.exists {
+      background-color: #f57c00;
+    }
+
+    .badge-dot.new {
+      background-color: #198754;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loading-spinner {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .header-section {
+        padding: 1.5rem;
+      }
+      
+      .header-title {
+        font-size: 1.4rem;
+      }
+      
+      .custom-table {
+        font-size: 12px;
+      }
+      
+      .custom-table thead th,
+      .custom-table tbody td {
+        padding: 8px 5px;
+      }
+    }
+
+    /* 滚动条样式 */
+    .table-container::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+      background: var(--bs-border-color);
+      border-radius: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+      background: #6c757d;
+      border-radius: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+      background: #495057;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main-container">
+    <!-- 头部区域 -->
+    <div class="header-section">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="header-title">
+          <i class="bi bi-translate"></i>
+          翻译管理
+        </h1>
+        <button class="save-btn" id="save-button">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          保存翻译
+        </button>
+      </div>
+    </div>
+
+    <!-- 表格区域 -->
+    <div class="table-container">
+      <div class="table-responsive">
+        <table class="table table-hover custom-table">
+          <thead id="table-header">
+            <tr>
+              <th id="original-header" style="width: 25%;">
+                <i class="bi bi-file-text me-1"></i>
+                原文
+              </th>
+              <th id="key-header" style="width: 15%;">
+                <i class="bi bi-key me-1"></i>
+                Key
+              </th>
+              <!-- Language columns will be dynamically added here -->
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Table rows will be dynamically added here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 加载遮罩 -->
+    <div class="loading-overlay" id="loading-overlay">
+      <div class="loading-spinner">
+        <div class="spinner-border text-primary mb-3" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div>正在保存...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    const vscode = acquireVsCodeApi();
+    let words = [];
+    let languages = [];
+
+    // Initialize the page with data
+    function initializePage(data) {
+      words = data.words || [];
+      languages = data.languages || [];
+      
+      renderTableHeader();
+      renderTableBody();
+    }
+
+    // Render table header with language columns
+    function renderTableHeader() {
+      const headerRow = document.querySelector('#table-header tr');
+      
+      // Remove existing language columns (keep original and key columns)
+      while (headerRow.children.length > 2) {
+        headerRow.removeChild(headerRow.lastChild);
+      }
+      
+      // Calculate column widths based on number of languages
+      const langCount = languages.length;
+      let originalWidth, keyWidth, langWidth, statusWidth;
+      
+      if (langCount === 0) {
+        originalWidth = 60;
+        keyWidth = 40;
+      } else if (langCount === 1) {
+        originalWidth = 30;
+        keyWidth = 20;
+        langWidth = 35;
+        statusWidth = 15;
+      } else if (langCount === 2) {
+        originalWidth = 25;
+        keyWidth = 15;
+        langWidth = 22;
+        statusWidth = 13;
+      } else {
+        originalWidth = 20;
+        keyWidth = 15;
+        langWidth = Math.floor(65 / langCount / 2);
+        statusWidth = Math.floor(65 / langCount / 2);
+      }
+      
+      // Update fixed column widths
+      document.getElementById('original-header').style.width = `${originalWidth}%`;
+      document.getElementById('key-header').style.width = `${keyWidth}%`;
+      
+      // Add language columns
+      languages.forEach(lang => {
+        const langHeader = document.createElement('th');
+        langHeader.style.width = `${langWidth}%`;
+        langHeader.innerHTML = `
+          <i class="bi bi-globe me-1"></i>
+          ${lang.langType}
+        `;
+        headerRow.appendChild(langHeader);
+        
+        const statusHeader = document.createElement('th');
+        statusHeader.style.width = `${statusWidth}%`;
+        statusHeader.innerHTML = `
+          <i class="bi bi-info-circle me-1"></i>
+          ${lang.langType}状态
+        `;
+        headerRow.appendChild(statusHeader);
+      });
+    }
+
+    // Render table body with word data
+    function renderTableBody() {
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+      
+      words.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.id = `tr_${item.id}`;
+        row.className = index % 2 === 0 ? 'table-row-even' : 'table-row-odd';
+        
+        // Original text column
+        const nameCell = document.createElement('td');
+        nameCell.className = 'name clickable-cell';
+        nameCell.setAttribute('data-id', item.id);
+        nameCell.textContent = item.value;
+        nameCell.title = '点击查看详情';
+        row.appendChild(nameCell);
+        
+        // Key column
+        const keyCell = document.createElement('td');
+        keyCell.className = 'key';
+        keyCell.setAttribute('data-id', item.id);
+        keyCell.innerHTML = `<code class="text-primary">${item.key}</code>`;
+        row.appendChild(keyCell);
+        
+        // Language columns
+        languages.forEach(lang => {
+          // Translation value column
+          const valueCell = document.createElement('td');
+          valueCell.setAttribute('data-id', item.id);
+          valueCell.textContent = item[lang.langType]?.value || '';
+          if (item[lang.langType]?.value) {
+            valueCell.style.color = 'var(--bs-body-color)';
+            valueCell.style.fontWeight = '500';
+          } else {
+            valueCell.style.color = 'var(--bs-body-color)';
+            valueCell.style.opacity = '0.6';
+          }
+          row.appendChild(valueCell);
+          
+          // Status column
+          const statusCell = document.createElement('td');
+          statusCell.setAttribute('data-id', item.id);
+          
+          const isExists = item[lang.langType]?.exists;
+          const statusBadge = document.createElement('span');
+          statusBadge.className = `status-badge ${isExists ? 'status-exists' : 'status-new'}`;
+          
+          statusBadge.innerHTML = `
+            <span class="badge-dot ${isExists ? 'exists' : 'new'}"></span>
+            ${isExists ? '已存在' : '新增'}
+          `;
+          
+          statusCell.appendChild(statusBadge);
+          row.appendChild(statusCell);
+        });
+        
+        tbody.appendChild(row);
+      });
+    }
+
+    function tableClick(e) {
+      const { target } = e;
+      if (target.classList.contains('name') || target.closest('.clickable-cell')) {
+        const cell = target.classList.contains('name') ? target : target.closest('.clickable-cell');
+        const id = cell.getAttribute('data-id');
+        const rowData = words.find(o => o.id === id);
+
+        // 点击效果已简化
+
+        vscode.postMessage({
+          data: rowData,
+          type: "open",
+        });
+      }
+    }
+
+    function save() {
+      // 显示加载遮罩
+      document.getElementById('loading-overlay').style.display = 'flex';
+      
+      // 添加按钮加载状态
+      const saveBtn = document.getElementById('save-button');
+      const originalContent = saveBtn.innerHTML;
+      saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>保存中...';
+      saveBtn.disabled = true;
+
+      vscode.postMessage({
+        data: words,
+        type: "save",
+      });
+
+      // 模拟保存完成（实际项目中应该在收到响应后执行）
+      setTimeout(() => {
+        document.getElementById('loading-overlay').style.display = 'none';
+        saveBtn.innerHTML = originalContent;
+        saveBtn.disabled = false;
+        
+        // 显示成功提示
+        showToast('保存成功！', 'success');
+      }, 1000);
+    }
+
+    // 显示Toast通知
+    function showToast(message, type = 'info') {
+      const toastContainer = document.getElementById('toast-container') || createToastContainer();
+      
+      const toast = document.createElement('div');
+      toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : 'primary'} border-0`;
+      toast.setAttribute('role', 'alert');
+      toast.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="bi bi-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
+            ${message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      `;
+      
+      toastContainer.appendChild(toast);
+      const bsToast = new bootstrap.Toast(toast);
+      bsToast.show();
+      
+      toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+      });
+    }
+
+    function createToastContainer() {
+      const container = document.createElement('div');
+      container.id = 'toast-container';
+      container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+      container.style.zIndex = '11000';
+      document.body.appendChild(container);
+      return container;
+    }
+
+    // Event listeners
+    document.querySelector('.table').addEventListener('click', tableClick);
+    document.getElementById('save-button').addEventListener('click', save);
+
+    // 键盘快捷键
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        save();
+      }
+    });
+
+    // Listen for messages from VS Code extension
+    window.addEventListener('message', event => {
+      const message = event.data;
+      if (message.type === 'initialize') {
+        initializePage(message.data);
+      }
+    });
+
+    // 页面加载动画已移除
+  </script>
+</body>
+
+</html> 

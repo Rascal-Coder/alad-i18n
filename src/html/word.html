@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+<head>
+  <meta charset="utf-8">
+  <title>词条管理</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style type="text/css">
+    body.vscode-light {
+      --bs-body-bg: #ffffff;
+      --bs-body-color: #333333;
+      --bs-border-color: #dee2e6;
+      --bs-table-bg: #ffffff;
+      --bs-table-hover-bg: #f8f9fa;
+      --danger-color: #dc3545;
+      --danger-hover: #bb2d3b;
+    }
+
+    body.vscode-dark {
+      --bs-body-bg: #1e1e1e;
+      --bs-body-color: #ffffff;
+      --bs-border-color: #404040;
+      --bs-table-bg: #2d2d2d;
+      --bs-table-hover-bg: #404040;
+      --danger-color: #dc3545;
+      --danger-hover: #bb2d3b;
+    }
+
+    body.vscode-high-contrast {
+      --bs-body-bg: #000000;
+      --bs-body-color: #ffffff;
+      --bs-border-color: #ffffff;
+      --bs-table-bg: #000000;
+      --bs-table-hover-bg: #333333;
+      --danger-color: #ff6b6b;
+      --danger-hover: #ff5252;
+    }
+
+    body {
+      background-color: var(--bs-body-bg);
+      color: var(--bs-body-color);
+      font-size: var(--vscode-editor-font-size);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stats-section {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1rem;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .translate-btn {
+      background: linear-gradient(45deg, #6f42c1, #6610f2);
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 25px;
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .translate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(111, 66, 193, 0.8);
+      background: linear-gradient(45deg, #4a2888, #4a0db0);
+    }
+
+    .translate-btn:active {
+      transform: translateY(0);
+    }
+
+    .translate-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.6s ease;
+    }
+
+    .translate-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .table-container {
+      background: var(--bs-table-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--bs-border-color);
+    }
+
+    .custom-table {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .custom-table thead th {
+      background: linear-gradient(135deg, #6c757d, #495057);
+      color: white;
+      font-weight: 600;
+      text-align: center;
+      padding: 15px 12px;
+      border: none;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .custom-table tbody td {
+      padding: 15px 12px;
+      vertical-align: middle;
+      border-color: var(--bs-border-color);
+      word-break: break-word;
+    }
+
+    .custom-table tbody tr {
+      transition: all 0.2s ease;
+    }
+
+    .custom-table tbody tr:hover {
+      background-color: var(--bs-table-hover-bg);
+      transform: scale(1.01);
+    }
+
+    .key-cell {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      background: rgba(13, 110, 253, 0.1);
+      border-radius: 6px;
+      padding: 4px 8px;
+      color: #0d6efd;
+      font-weight: 500;
+      display: inline-block;
+      max-width: 100%;
+      word-break: break-all;
+    }
+
+    .value-cell {
+      line-height: 1.4;
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .value-cell:hover {
+      white-space: normal;
+      word-wrap: break-word;
+    }
+
+    .delete-btn {
+      background: linear-gradient(45deg, var(--danger-color), #e74c3c);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    .delete-btn:hover {
+      background: linear-gradient(45deg, var(--danger-hover), #c0392b);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+      color: white;
+      text-decoration: none;
+    }
+
+    .delete-btn:active {
+      transform: translateY(0);
+    }
+
+    .action-cell {
+      text-align: center;
+      width: 120px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loading-spinner {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      color: #333;
+    }
+
+    .search-container {
+      margin-bottom: 1.5rem;
+    }
+
+    .search-input {
+      border-radius: 25px;
+      border: 2px solid var(--bs-border-color);
+      padding: 10px 20px 10px 45px;
+      background: var(--bs-table-bg);
+      color: var(--bs-body-color);
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+      background: var(--bs-table-bg);
+      color: var(--bs-body-color);
+    }
+
+    .search-input::placeholder {
+      color: var(--bs-body-color);
+      opacity: 0.6;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .header-section {
+        padding: 1.5rem;
+      }
+
+      .header-title {
+        font-size: 1.4rem;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .stats-section {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      .custom-table {
+        font-size: 12px;
+      }
+
+      .custom-table thead th,
+      .custom-table tbody td {
+        padding: 8px 6px;
+      }
+
+      .value-cell {
+        max-width: 150px;
+      }
+    }
+
+    /* 动画效果 */
+
+    .fade-out {
+      animation: fadeOut 0.2s ease-out forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+      }
+    }
+
+    /* 滚动条样式 */
+    .table-container::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+      background: var(--bs-border-color);
+      border-radius: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+      background: #6c757d;
+      border-radius: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+      background: #495057;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main-container">
+    <!-- 头部区域 -->
+    <div class="header-section">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="header-title">
+            <i class="bi bi-file-earmark-text"></i>
+            词条管理
+          </h1>
+          <div class="stats-section">
+            <div class="stat-item">
+              <i class="bi bi-list-ul"></i>
+              <span>总数量: <strong id="total-count">0</strong></span>
+            </div>
+          </div>
+        </div>
+        <button class="translate-btn" id="translate-button">
+          <i class="bi bi-translate me-2"></i>
+          开始翻译
+        </button>
+      </div>
+    </div>
+
+    <!-- 搜索区域 -->
+    <div class="search-container">
+      <div class="position-relative">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" class="form-control search-input" id="search-input" placeholder="搜索 key 或字符串内容...">
+      </div>
+    </div>
+
+    <!-- 表格区域 -->
+    <div class="table-container">
+      <div class="table-responsive">
+        <table class="table table-hover custom-table">
+          <thead>
+            <tr>
+              <th style="width: 30%;">
+                <i class="bi bi-key me-1"></i>
+                Key
+              </th>
+              <th style="width: 50%;">
+                <i class="bi bi-type me-1"></i>
+                字符串内容
+              </th>
+              <th style="width: 20%;">
+                <i class="bi bi-gear me-1"></i>
+                操作
+              </th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Table rows will be dynamically added here -->
+          </tbody>
+        </table>
+
+        <!-- 空状态 -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+          <i class="bi bi-inbox"></i>
+          <h5>暂无数据</h5>
+          <p class="text-muted">当前没有字符串数据，请添加一些内容。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 加载遮罩 -->
+    <div class="loading-overlay" id="loading-overlay">
+      <div class="loading-spinner">
+        <div class="spinner-border text-primary mb-3" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div>正在处理翻译请求...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const vscode = acquireVsCodeApi();
+    let words = [];
+    let filteredWords = [];
+    let currentFilter = 'all';
+
+    // Initialize the page with data
+    function initializePage(data) {
+      words = data || [];
+      filteredWords = [...words];
+      updateStats();
+      renderTableBody();
+    }
+
+    // Update statistics
+    function updateStats() {
+      document.getElementById('total-count').textContent = words.length;
+    }
+
+    // Render table body with word data
+    function renderTableBody() {
+      const tbody = document.getElementById('table-body');
+      const emptyState = document.getElementById('empty-state');
+
+      tbody.innerHTML = '';
+
+      if (filteredWords.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      filteredWords.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.id = `tr_${CSS.escape(item.key)}`;
+        // 移除动画效果
+
+        // Key column
+        const keyCell = document.createElement('td');
+        keyCell.innerHTML = `<div class="key-cell" title="${item.key}">${item.key}</div>`;
+        row.appendChild(keyCell);
+
+        // Value column
+        const valueCell = document.createElement('td');
+        valueCell.className = 'value-cell';
+        valueCell.textContent = item.value;
+        valueCell.title = item.value;
+        row.appendChild(valueCell);
+
+        // Action column
+        const actionCell = document.createElement('td');
+        actionCell.className = 'action-cell';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.setAttribute('data-id', item.key);
+        deleteBtn.innerHTML = '<i class="bi bi-trash me-1"></i>删除';
+        deleteBtn.title = '删除此项';
+
+        actionCell.appendChild(deleteBtn);
+        row.appendChild(actionCell);
+
+        tbody.appendChild(row);
+      });
+
+      updateStats();
+    }
+
+    // Search and filter functionality
+    function performSearch() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+
+      if (searchTerm === '') {
+        filteredWords = [...words];
+      } else {
+        filteredWords = words.filter(item => {
+          switch (currentFilter) {
+            case 'key':
+              return item.key.toLowerCase().includes(searchTerm);
+            case 'value':
+              return item.value.toLowerCase().includes(searchTerm);
+            default:
+              return item.key.toLowerCase().includes(searchTerm) ||
+                item.value.toLowerCase().includes(searchTerm);
+          }
+        });
+      }
+
+      renderTableBody();
+    }
+
+
+    function tableClick(e) {
+      const { target } = e;
+
+      if (target.classList.contains('delete-btn') || target.closest('.delete-btn')) {
+        const btn = target.classList.contains('delete-btn') ? target : target.closest('.delete-btn');
+        const key = btn.getAttribute('data-id');
+
+        // 直接删除，在webview中更流畅
+        deleteItem(key, btn);
+      }
+    }
+
+    function deleteItem(key, btn) {
+      // 先向VS Code发送删除消息
+      vscode.postMessage({
+        type: "delete",
+        key: key
+      });
+
+      // 添加删除动画
+      const row = document.querySelector(`tr#tr_${CSS.escape(key)}`);
+      if (row) {
+        row.classList.add('fade-out');
+
+        setTimeout(() => {
+          row.remove();
+          words = words.filter(o => o.key !== key);
+          performSearch(); // 重新渲染以更新统计
+        }, 200);
+      }
+
+      // 显示删除成功提示
+      showToast(`已删除 "${key}"`, 'success');
+    }
+
+    function translate() {
+      if (words.length === 0) {
+        showToast('没有可翻译的内容', 'warning');
+        return;
+      }
+
+      // 显示加载遮罩
+      document.getElementById('loading-overlay').style.display = 'flex';
+
+      // 添加按钮加载状态
+      const translateBtn = document.getElementById('translate-button');
+      const originalContent = translateBtn.innerHTML;
+      translateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>翻译中...';
+      translateBtn.disabled = true;
+
+      vscode.postMessage({
+        data: words,
+        type: "translate",
+      });
+
+      // 模拟翻译完成（实际项目中应该在收到响应后执行）
+      setTimeout(() => {
+        document.getElementById('loading-overlay').style.display = 'none';
+        translateBtn.innerHTML = originalContent;
+        translateBtn.disabled = false;
+
+        showToast('翻译请求已发送！', 'success');
+      }, 1500);
+    }
+
+    // 显示Toast通知
+    function showToast(message, type = 'info') {
+      const toastContainer = document.getElementById('toast-container') || createToastContainer();
+
+      const iconMap = {
+        success: 'check-circle',
+        warning: 'exclamation-triangle',
+        error: 'x-circle',
+        info: 'info-circle'
+      };
+
+      const colorMap = {
+        success: 'success',
+        warning: 'warning',
+        error: 'danger',
+        info: 'primary'
+      };
+
+      const toast = document.createElement('div');
+      toast.className = `toast align-items-center text-white bg-${colorMap[type]} border-0`;
+      toast.setAttribute('role', 'alert');
+      toast.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="bi bi-${iconMap[type]} me-2"></i>
+            ${message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      `;
+
+      toastContainer.appendChild(toast);
+      const bsToast = new bootstrap.Toast(toast);
+      bsToast.show();
+
+      toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+      });
+    }
+
+    function createToastContainer() {
+      const container = document.createElement('div');
+      container.id = 'toast-container';
+      container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+      container.style.zIndex = '11000';
+      document.body.appendChild(container);
+      return container;
+    }
+
+    // Event listeners
+    document.querySelector('.table').addEventListener('click', tableClick);
+    document.getElementById('translate-button').addEventListener('click', translate);
+
+    // Search functionality
+    document.getElementById('search-input').addEventListener('input', performSearch);
+
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && document.activeElement === document.getElementById('search-input')) {
+        performSearch();
+      } else if (e.key === 'Escape') {
+        document.getElementById('search-input').value = '';
+        performSearch();
+      }
+    });
+
+    // Listen for messages from VS Code extension
+    window.addEventListener('message', event => {
+      const message = event.data;
+      if (message.type === 'initialize') {
+        initializePage(message.data);
+      }
+    });
+  </script>
+</body>
+
+</html>

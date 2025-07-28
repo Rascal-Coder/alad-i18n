@@ -2,7 +2,7 @@
 	"name": "Alad-i18n",
 	"displayName": "Alad-i18n",
 	"description": "支持自动获取文件代码中的中文，自动翻译成各种语言并自动保存到本地。",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"repository": "https://github.com/Rascal-Coder/alad-i18n",
 	"publisher": "rascal-coder1",
 	"engines": {
@@ -128,9 +128,8 @@
 		"watch:html": "copyfiles -u 2 src/html/**/*.html out/html -w",
 		"watch": "npm-run-all --parallel watch:ts watch:html",
 		"lint": "eslint src --ext ts",
-		"build": "node ./build/index.mjs && vsce package && npm run sync-version",
-		"copy:html": "copyfiles -u 2 src/html/**/*.html out/html",
-		"sync-version": "node scripts/sync-version.js"
+		"build": "node ./build/index.mjs && vsce package",
+		"copy:html": "copyfiles -u 2 src/html/**/*.html out/html"
 	},
 	"devDependencies": {
 		"@types/ejs": "^3.1.5",
@@ -159,4 +158,4 @@
 		"nanoid": "^5.1.5",
 		"vue-eslint-parser": "^9.1.1"
 	}
-}	
+}

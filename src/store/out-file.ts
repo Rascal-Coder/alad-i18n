@@ -50,6 +50,15 @@ class WordsManager {
   private readonly currentTextDocumentFileUri = vscode.window.activeTextEditor?.document.uri
   private readonly projectRootPath = vscode.workspace.workspaceFolders?.[0]?.uri?.fsPath
   private readonly DEFAULT_LANG_TYPE = 'zh'
+  private previousActiveEditor: vscode.TextEditor | undefined
+
+  // 清理文本：去除换行符、多余空格、制表符等
+  private cleanText(text: string): string {
+    return text
+      .replace(/\s+/g, ' ') // 将多个空白字符替换为单个空格
+      .trim() // 去除首尾空格
+  }
+
   // 改为getter方法，每次使用时动态获取最新配置
   private get languages() {
     return this.getLanguages()
@@ -97,6 +106,9 @@ class WordsManager {
   }
 
   public openWordsPage() {
+    // 保存当前激活的编辑器，以便在关闭 webview 时重新激活
+    this.previousActiveEditor = vscode.window.activeTextEditor
+
     const columnToShowIn = vscode.window.activeTextEditor
       ? vscode.window.activeTextEditor.viewColumn
       : vscode.ViewColumn.Active
@@ -117,6 +129,14 @@ class WordsManager {
 
     this.webviewPanel.onDidDispose(() => {
       this.webviewPanel = undefined
+      // 重新激活之前的编辑器
+      if (this.previousActiveEditor && !this.previousActiveEditor.document.isClosed) {
+        vscode.window.showTextDocument(
+          this.previousActiveEditor.document,
+          this.previousActiveEditor.viewColumn,
+        )
+      }
+      this.previousActiveEditor = undefined
     })
 
     this.webviewPanel.webview.html = getWordWebviewHtml(globalStatus.context)
@@ -257,7 +277,7 @@ class WordsManager {
       const words = this.getLocalWordsByFileName(lang.localeFileName, false)
       const toTranslateWords = data
         .filter((item: any) => !words[item.key])
-        .map((item: any) => item.value)
+        .map((item: any) => this.cleanText(item.value))
 
       let transResult: any = {}
 
@@ -274,9 +294,11 @@ class WordsManager {
 
       data.forEach((item: Words) => {
         const value = words[item.key!]
+        // 清理文本以匹配翻译结果的键
+        const cleanedValue = this.cleanText(item.value)
         item[lang.langType] = {
           exists: !!value,
-          value: value || transResult[item.value],
+          value: value || transResult[cleanedValue],
         }
       })
     }

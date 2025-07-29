@@ -5,6 +5,7 @@ import { EntryStatus, InsertState } from './types'
 export type WordBarItem = {
   key: string
   text: string
+  sourceFiles?: string[] // 记录词条来源的所有文件路径
 }
 /*两个词条库数据保持一致，用于不同的校验处理*/
 // 单词条目
@@ -12,15 +13,27 @@ export let WordBar: WordBarItem[] = []
 // json结构的词条，最终丢出去的提取词条库
 export let WordBarJson: { [key: string]: string } = {}
 // 录入词条，统一处理，必须是唯一的处理入口
-export function entryWordBar(content: string): EntryStatus {
-  const item = wordProcessing(content)
+export function entryWordBar(content: string, sourceFile?: string): EntryStatus {
+  const item = wordProcessing(content, sourceFile)
   if (!item) return { key: '', state: InsertState.empty, text: '' }
   const { text } = item
 
   // 首先检查已有的WordBarJson中是否有相同的中文文本
   for (const [existingKey, existingText] of Object.entries(WordBarJson)) {
     if (existingText === text) {
-      // 找到相同的中文文本，返回已有的key
+      // 找到相同的中文文本，更新源文件信息
+      if (sourceFile) {
+        const existingItem = WordBar.find((item) => item.key === existingKey)
+        if (existingItem) {
+          if (!existingItem.sourceFiles) {
+            existingItem.sourceFiles = []
+          }
+          if (!existingItem.sourceFiles.includes(sourceFile)) {
+            existingItem.sourceFiles.push(sourceFile)
+          }
+        }
+      }
+
       return {
         state: InsertState.success,
         key: existingKey, // 使用已有的key
@@ -34,6 +47,7 @@ export function entryWordBar(content: string): EntryStatus {
   WordBar.push({
     key: newKey,
     text,
+    sourceFiles: sourceFile ? [sourceFile] : [], // 添加源文件信息数组
   })
   WordBarJson[newKey] = text
 
@@ -53,7 +67,7 @@ export function getWordBar() {
 }
 
 // 文字提取处理
-export function wordProcessing(str = '') {
+export function wordProcessing(str = '', sourceFile?: string) {
   if (!str) return false
   // 不是汉字的不能进入提取
   if (!isChina(str)) return false
@@ -63,6 +77,7 @@ export function wordProcessing(str = '') {
   return {
     key: sortId, // nanoid
     text: str.trim(), // 原始内容需要保留
+    sourceFiles: sourceFile ? [sourceFile] : [], // 添加源文件信息数组
   } as WordBarItem
 }
 

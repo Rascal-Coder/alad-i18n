@@ -120,7 +120,9 @@ class WordsManager {
     })
 
     this.webviewPanel.webview.html = getWordWebviewHtml(globalStatus.context)
-    initializeWordWebview(this.webviewPanel.webview, this.words)
+    // 获取当前页面的词条
+    const currentPageWords = this.getCurrentPageWords()
+    initializeWordWebview(this.webviewPanel.webview, currentPageWords)
 
     this.webviewPanel.webview.onDidReceiveMessage((e) => this.didReceiveMessageHandle(e))
   }
@@ -138,6 +140,12 @@ class WordsManager {
           this.translate(data)
         } else {
           message({ msg: '没有可翻译的数据', type: MessageType.error })
+        }
+      },
+      delete: () => {
+        // 删除词条
+        if (data && data.key) {
+          this.deleteWord(data.key)
         }
       },
       save: async () => {
@@ -318,6 +326,45 @@ class WordsManager {
 
   public getWords(): Words[] {
     return this.words
+  }
+
+  // 获取当前页面的词条
+  private getCurrentPageWords(): Words[] {
+    const currentFile = vscode.window.activeTextEditor?.document.uri.fsPath
+    if (!currentFile) {
+      return this.words // 如果无法获取当前文件，返回所有词条
+    }
+
+    // 从 WordBar 中获取与当前文件相关的词条
+    const { WordBar } = getWordBar()
+    const currentPageWords = WordBar.filter(
+      (item) => item.sourceFiles && item.sourceFiles.includes(currentFile),
+    ).map((item) => ({
+      key: item.key,
+      value: item.text,
+    })) as Words[]
+
+    return currentPageWords
+  }
+
+  // 删除词条
+  private deleteWord(key: string) {
+    const { WordBar, WordBarJson } = getWordBar()
+
+    // 从WordBar中删除
+    const index = WordBar.findIndex((item) => item.key === key)
+    if (index !== -1) {
+      WordBar.splice(index, 1)
+    }
+
+    // 从WordBarJson中删除
+    delete WordBarJson[key]
+
+    // 刷新webview显示当前页面的词条
+    if (this.webviewPanel) {
+      const currentPageWords = this.getCurrentPageWords()
+      initializeWordWebview(this.webviewPanel.webview, currentPageWords)
+    }
   }
 }
 

@@ -96,7 +96,8 @@ export default {
             VText: [],*/
           {
             TemplateElement(node: ESTree.TemplateElement) {
-              const entryStatus = entryWordBar(node.value.raw)
+              const sourceFile = context.getFilename()
+              const entryStatus = entryWordBar(node.value.raw, sourceFile)
               replaceText({
                 node,
                 entryStatus,
@@ -113,7 +114,8 @@ export default {
                 )
                   return
               }
-              const entryStatus = entryWordBar((node as ESTree.Literal).value as string)
+              const sourceFile = context.getFilename()
+              const entryStatus = entryWordBar((node as ESTree.Literal).value as string, sourceFile)
               replaceText({
                 node,
                 entryStatus,
@@ -122,7 +124,8 @@ export default {
               })
             },
             VLiteral(node: AST.VLiteral): void {
-              const entryStatus = entryWordBar(node.value)
+              const sourceFile = context.getFilename()
+              const entryStatus = entryWordBar(node.value, sourceFile)
               // 父级节点需要改为冒号方式，传递父节点
               replaceText({
                 node: node.parent,
@@ -133,7 +136,8 @@ export default {
             },
             VText(node: AST.VText): void {
               // console.log(node)
-              const entryStatus = entryWordBar(node.value)
+              const sourceFile = context.getFilename()
+              const entryStatus = entryWordBar(node.value, sourceFile)
               replaceText({
                 node,
                 entryStatus,
@@ -159,7 +163,8 @@ export default {
                   }
                 })
               }
-              const entryStatus = entryWordBar((node as ESTree.Literal).value as string)
+              const sourceFile = context.getFilename()
+              const entryStatus = entryWordBar((node as ESTree.Literal).value as string, sourceFile)
               switch (parent?.type as string) {
                 case ASTType.JSXAttribute: {
                   // 父级节点需要改为冒号方式，传递父节点
@@ -216,7 +221,8 @@ export default {
               }
             },
             TemplateElement(node: ESTree.TemplateElement) {
-              const entryStatus = entryWordBar(node.value.raw)
+              const sourceFile = context.getFilename()
+              const entryStatus = entryWordBar(node.value.raw, sourceFile)
               replaceText({
                 node,
                 entryStatus,
@@ -225,7 +231,8 @@ export default {
               })
             },
             JSXText(node: JSXText) {
-              const entryStatus = entryWordBar(node.value)
+              const sourceFile = context.getFilename()
+              const entryStatus = entryWordBar(node.value, sourceFile)
               replaceText({
                 node,
                 entryStatus,

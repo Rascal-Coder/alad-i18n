@@ -4,7 +4,7 @@
 	"description": "支持自动获取文件代码中的中文，自动翻译成各种语言并自动保存到本地。",
 	"version": "0.0.10",
 	"repository": "https://github.com/Rascal-Coder/alad-i18n",
-	"publisher": "rascal-coder1",
+	"publisher": "Rascal-Coder",
 	"engines": {
 		"vscode": "^1.77.0"
 	},
